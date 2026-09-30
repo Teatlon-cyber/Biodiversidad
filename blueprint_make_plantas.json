@@ -1,0 +1,194 @@
+{
+  "name": "Bot Telegram - Diagnóstico de Plantas (BIODIVERSIDAdd_bot)",
+  "flow": [
+    {
+      "id": 1,
+      "module": "telegram:WatchUpdates",
+      "version": 1,
+      "parameters": {},
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "mapper": null,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "module": "telegram:DownloadFile",
+              "version": 1,
+              "filter": {
+                "name": "Tiene foto",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.photo}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "parameters": {},
+              "mapper": {
+                "fileId": "{{1.message.attachment.file_id}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": -150
+                }
+              }
+            },
+            {
+              "id": 4,
+              "module": "ai-local-agent:RunLocalAIAgent",
+              "version": 0,
+              "parameters": {},
+              "mapper": {
+                "message": "Analiza la planta de la foto adjunta y dame el diagnóstico. Comentario del usuario (puede estar vacío): {{1.message.caption}}",
+                "files": [
+                  {
+                    "fileName": "{{3.fileName}}",
+                    "data": "{{3.fileOutput}}"
+                  }
+                ],
+                "threadId": "",
+                "timeout": "",
+                "outputType": "text",
+                "tokenLimit": "60",
+                "defaultModel": "small",
+                "fallbackEnabled": false,
+                "modelConfig": {
+                  "recursionLimit": "20",
+                  "iterationsFromHistoryCount": "1"
+                },
+                "systemPrompt": "Eres un botánico experto y amigable que ayuda a personas a cuidar sus plantas. Recibirás la foto de una planta.\n\nResponde SIEMPRE en español, con tono cálido y cercano, usando algunos emojis, en un máximo de 150 palabras y con esta estructura:\n\n🌿 Planta: nombre común y científico (indica tu nivel de certeza; si no puedes identificarla, dilo con honestidad).\n🩺 Estado de salud: describe lo que observas (color de hojas, manchas, marchitez, plagas, etc.).\n💧 Riego: frecuencia y cantidad recomendada.\n☀️ Luz y ubicación: qué tipo de luz necesita.\n✅ Recomendaciones: 2 o 3 acciones concretas para mejorar o mantener su salud.\n\nSi la imagen no muestra una planta, responde amablemente que no logras ver una planta y pide otra foto. No inventes información ni des diagnósticos con falsa certeza."
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": -150
+                },
+                "restore": {
+                  "expect": {
+                    "files": {
+                      "mode": "chose"
+                    },
+                    "outputType": {
+                      "label": "Text"
+                    },
+                    "defaultModel": {
+                      "mode": "chose",
+                      "label": "SmallModel: gpt-5-nano. Reasoning: minimal. Efficiently handles long conversations and reasoning, delivering smart conclusions quickly"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": 5,
+              "module": "telegram:SendReplyMessage",
+              "version": 1,
+              "parameters": {},
+              "mapper": {
+                "chatId": "{{1.message.chat.id}}",
+                "text": "{{4.response}}",
+                "parseMode": "",
+                "replyToMessageId": "{{1.message.message_id}}",
+                "replyMarkupAssembleType": "reply_markup_enter",
+                "replyMarkup": "",
+                "messageThreadId": ""
+              },
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": -150
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 6,
+              "module": "telegram:SendReplyMessage",
+              "version": 1,
+              "filter": {
+                "name": "No tiene foto",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.chat.id}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{1.message.photo}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "parameters": {},
+              "mapper": {
+                "chatId": "{{1.message.chat.id}}",
+                "text": "🌱 ¡Hola! Para poder ayudarte necesito una foto de tu planta 📸\n\nEnvíame una imagen clara (de preferencia con buena luz y mostrando las hojas) y te daré un diagnóstico sobre su salud, riego y cuidados. 🌿",
+                "parseMode": "",
+                "replyToMessageId": "{{1.message.message_id}}",
+                "replyMarkupAssembleType": "reply_markup_enter",
+                "replyMarkup": "",
+                "messageThreadId": ""
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 150
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    }
+  },
+  "scheduling": {
+    "type": "immediately"
+  },
+  "interface": {
+    "input": [],
+    "output": []
+  }
+}
