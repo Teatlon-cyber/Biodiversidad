@@ -65,18 +65,6 @@ Los dos filtros son excluyentes: cada mensaje toma una sola ruta.
 ✅ Recomendaciones: ...
 ```
 
-## 📁 Estructura del repositorio
-
-```
-├── README.md
-├── .gitignore
-├── codigo/
-│   ├── blueprint_make_plantas.json   # Blueprint exportado del escenario de Make
-│   └── prompt_agente_ia.md           # Prompt del agente de IA
-└── imagenes/
-    └── escenario_make.png            # Captura del escenario en Make
-```
-
 ## 🚀 Cómo replicarlo
 
 1. Crea un bot con [@BotFather](https://t.me/BotFather) y guarda el token.
