@@ -65,16 +65,6 @@ Los dos filtros son excluyentes: cada mensaje toma una sola ruta.
 ✅ Recomendaciones: ...
 ```
 
-## 🚀 Cómo replicarlo
-
-1. Crea un bot con [@BotFather](https://t.me/BotFather) y guarda el token.
-2. En Make, crea una conexión **Telegram Bot** con ese token.
-3. Crea un escenario nuevo, abre el menú **⋯ → Import Blueprint** y selecciona `codigo/blueprint_make_plantas.json`.
-4. Reasigna el webhook y las conexiones (Telegram y Make's AI Provider) a las tuyas.
-5. Activa el escenario y escribe a tu bot.
-
-> ⚠️ **Seguridad:** el blueprint solo contiene IDs internos de Make, no credenciales. Nunca subas el token del bot al repositorio.
-
 ## 📊 Resultados
 
 Pruebas reales registradas en el historial de ejecuciones de Make:
